@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "TheWarren Image Preview",
+  "version": "1.0",
+  "description": "Adds image preview functionality to TheWarren.co.za advanced search page",
+  "permissions": ["activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["https://thewarren.co.za/search*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ]
+}
