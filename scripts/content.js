@@ -6,6 +6,7 @@
   let previewDiv = null;
   let isSetup = false;
   let currentAttachedRows = new Set(); // Keep track of rows with listeners
+  let currentAttachedImages = new Set(); // Keep track of images with listeners
 
   /**
    * Creates or ensures the existence of the preview div and attaches it to the results table.
@@ -38,17 +39,22 @@
       resultsTable.style.position = "relative";
     }
 
+    // Style previewDiv for absolute positioning
+    previewDiv.style.position = "absolute";
+    previewDiv.style.pointerEvents = "none"; // Let mouse events pass through
+
     return true;
   }
 
   function attachRowListeners() {
+    // Attach hover listeners to rows for background styling
     const allRows = document.querySelectorAll(".row");
     const newAttachedRows = new Set();
 
     allRows.forEach((row) => {
       if (!currentAttachedRows.has(row)) {
-        row.addEventListener("mouseover", handleMouseOver);
-        row.addEventListener("mouseout", handleMouseOut);
+        row.addEventListener("mouseenter", handleRowMouseEnter);
+        row.addEventListener("mouseleave", handleRowMouseLeave);
       }
       newAttachedRows.add(row);
     });
@@ -56,56 +62,91 @@
     // Remove listeners from rows that are no longer in the DOM
     currentAttachedRows.forEach((row) => {
       if (!newAttachedRows.has(row)) {
-        row.removeEventListener("mouseover", handleMouseOver);
-        row.removeEventListener("mouseout", handleMouseOut);
+        row.removeEventListener("mouseenter", handleRowMouseEnter);
+        row.removeEventListener("mouseleave", handleRowMouseLeave);
       }
     });
 
     currentAttachedRows = newAttachedRows; // Update the set of attached rows
+
+    // Attach preview listeners to images only
+    const allImages = document.querySelectorAll(".mtgCardImage");
+    const newAttachedImages = new Set();
+
+    allImages.forEach((img) => {
+      if (!currentAttachedImages.has(img)) {
+        img.addEventListener("mouseenter", handleImageMouseEnter);
+        img.addEventListener("mouseleave", handleImageMouseLeave);
+        img.addEventListener("mousemove", handleMouseMove);
+      }
+      newAttachedImages.add(img);
+    });
+
+    // Remove listeners from images that are no longer in the DOM
+    currentAttachedImages.forEach((img) => {
+      if (!newAttachedImages.has(img)) {
+        img.removeEventListener("mouseenter", handleImageMouseEnter);
+        img.removeEventListener("mouseleave", handleImageMouseLeave);
+        img.removeEventListener("mousemove", handleMouseMove);
+      }
+    });
+
+    currentAttachedImages = newAttachedImages; // Update the set of attached images
   }
 
-  function handleMouseOver() {
+  // Show preview when hovering over the image only
+  function handleImageMouseEnter(e) {
     if (!previewDiv) return;
 
-    // Find image element in the row
-    const imgElement = this.querySelector(".item.card.left img");
-    if (imgElement) {
-      const imgSrc = imgElement.src;
-      const previewImg = previewDiv.querySelector("img");
+    const imgElement = this;
+    const imgSrc = imgElement.src;
+    const previewImg = previewDiv.querySelector("img");
 
-      // Set the preview image source
-      previewImg.src = imgSrc;
-      previewDiv.style.display = "block";
+    // Set the preview image source
+    previewImg.src = imgSrc;
+    previewDiv.style.display = "block";
 
-      // Check if the card has isFoil class and apply foil effect
-      const cardElement = this.querySelector(".item.card");
-      if (cardElement && cardElement.classList.contains("isFoil")) {
-        previewDiv.classList.add("foil");
-      } else {
-        previewDiv.classList.remove("foil");
-      }
-
-      // Position the preview div
-      const advancedSearchElement = document.getElementById("advancedSearch");
-      if (!advancedSearchElement) return; // Defensive check
-
-      const rowRect = this.getBoundingClientRect();
-      const advancedSearchRect = advancedSearchElement.getBoundingClientRect();
-
-      // Position to the right of the row, with some offset
-      const leftPos = 80;
-      // Adjust top position relative to the advancedSearch container
-      const topPos = rowRect.bottom - (40 + advancedSearchRect.top);
-
-      previewDiv.style.left = leftPos + "px";
-      previewDiv.style.top = topPos + "px";
+    // Check if the card has isFoil class and apply foil effect
+    const cardElement = imgElement.closest(".item.card");
+    if (cardElement && cardElement.classList.contains("isFoil")) {
+      previewDiv.classList.add("foil");
+    } else {
+      previewDiv.classList.remove("foil");
     }
   }
 
-  function handleMouseOut() {
+  function handleImageMouseLeave(e) {
     if (previewDiv) {
       previewDiv.style.display = "none";
     }
+  }
+
+  function handleMouseMove(e) {
+    if (!previewDiv) return;
+    const advancedSearchElement = document.getElementById("advancedSearch");
+    if (!advancedSearchElement) return;
+
+    const advancedSearchRect = advancedSearchElement.getBoundingClientRect();
+
+    // Offset from mouse pointer
+    const offsetX = 10;
+    const offsetY = 10;
+
+    // Position relative to advancedSearch container
+    const leftPos = e.clientX - advancedSearchRect.left + offsetX;
+    const topPos = e.clientY - advancedSearchRect.top + offsetY;
+
+    previewDiv.style.left = leftPos + "px";
+    previewDiv.style.top = topPos + "px";
+  }
+
+  // Row hover background logic
+  function handleRowMouseEnter(e) {
+    this.classList.add("row-hovered");
+  }
+
+  function handleRowMouseLeave(e) {
+    this.classList.remove("row-hovered");
   }
 
   /**

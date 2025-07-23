@@ -10,6 +10,13 @@
     border-radius: 10px;
 }
 
+/* Darken row background on hover or when hovered class is present */
+.tableData .row:hover:not(.heading),
+.tableData .row.row-hovered:not(.heading) {
+    background-color: #b8b4b4ab !important;
+    transition: background 0.15s;
+}
+
 #image-preview img {
     max-width: 300px; /* Adjust as needed */
     max-height: 300px; /* Adjust as needed */
