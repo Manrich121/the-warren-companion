@@ -1,3 +1,10 @@
+/* Darken row background on hover or when hovered class is present */
+.tableData .row:hover:not(.heading),
+.tableData .row.row-hovered:not(.heading) {
+    background-color: #b8b4b4ab !important;
+    transition: background 0.15s;
+}
+
 #image-preview {
     position: absolute;
     border: 1px solid #ccc;
@@ -8,13 +15,6 @@
     display: none; /* Initially hidden */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-}
-
-/* Darken row background on hover or when hovered class is present */
-.tableData .row:hover:not(.heading),
-.tableData .row.row-hovered:not(.heading) {
-    background-color: #b8b4b4ab !important;
-    transition: background 0.15s;
 }
 
 #image-preview img {
