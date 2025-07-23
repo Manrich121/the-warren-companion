@@ -1,4 +1,4 @@
-# TheWarren Image Preview Extension
+# The Warren Image Preview Extension
 
 A Chrome extension that adds image preview functionality to the advanced search page on TheWarren.co.za. When you hover over search results, it displays a larger preview of the image.
 
