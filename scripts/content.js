@@ -8,14 +8,19 @@
   let currentAttachedRows = new Set(); // Keep track of rows with listeners
   let currentAttachedImages = new Set(); // Keep track of images with listeners
 
+  // Element container with position:relative
+  const containerElementQueryString = ".innerContainer:has(.tableData)";
+
   /**
    * Creates or ensures the existence of the preview div and attaches it to the results table.
-   * Also sets the resultsTable's position if it's static.
+   * Also sets the containerElement's position if it's static.
    */
   function setupPreviewDiv() {
-    const resultsTable = document.getElementById("advancedSearch");
+    const containerElement = document.querySelector(
+      containerElementQueryString,
+    );
 
-    if (!resultsTable) {
+    if (!containerElement) {
       return false;
     }
 
@@ -25,18 +30,18 @@
       const imgTag = document.createElement("img");
       imgTag.alt = "Image preview";
       previewDiv.appendChild(imgTag);
-      resultsTable.appendChild(previewDiv);
+      containerElement.appendChild(previewDiv);
     } else {
-      // Ensure it's a child of resultsTable
-      if (previewDiv.parentElement !== resultsTable) {
-        resultsTable.appendChild(previewDiv);
+      // Ensure it's a child of containerElement
+      if (previewDiv.parentElement !== containerElement) {
+        containerElement.appendChild(previewDiv);
       }
     }
 
-    // Set resultsTable position to relative if it's static, for positioning context
-    const resultsTableStyles = window.getComputedStyle(resultsTable);
-    if (resultsTableStyles.position === "static") {
-      resultsTable.style.position = "relative";
+    // Set containerElement position to relative if it's static, for positioning context
+    const containerElementStyles = window.getComputedStyle(containerElement);
+    if (containerElementStyles.position === "static") {
+      containerElement.style.position = "relative";
     }
 
     // Style previewDiv for absolute positioning
@@ -70,7 +75,7 @@
     currentAttachedRows = newAttachedRows; // Update the set of attached rows
 
     // Attach preview listeners to images only
-    const allImages = document.querySelectorAll(".mtgCardImage");
+    const allImages = document.querySelectorAll(".item.left > img");
     const newAttachedImages = new Set();
 
     allImages.forEach((img) => {
@@ -123,18 +128,20 @@
 
   function handleMouseMove(e) {
     if (!previewDiv) return;
-    const advancedSearchElement = document.getElementById("advancedSearch");
-    if (!advancedSearchElement) return;
+    const containerElement = document.querySelector(
+      containerElementQueryString,
+    );
+    if (!containerElement) return;
 
-    const advancedSearchRect = advancedSearchElement.getBoundingClientRect();
+    const containerElementRect = containerElement.getBoundingClientRect();
 
     // Offset from mouse pointer
     const offsetX = 10;
     const offsetY = 10;
 
     // Position relative to advancedSearch container
-    const leftPos = e.clientX - advancedSearchRect.left + offsetX;
-    const topPos = e.clientY - advancedSearchRect.top + offsetY;
+    const leftPos = e.clientX - containerElementRect.left + offsetX;
+    const topPos = e.clientY - containerElementRect.top + offsetY;
 
     previewDiv.style.left = leftPos + "px";
     previewDiv.style.top = topPos + "px";
@@ -158,7 +165,7 @@
       // If the results table isn't ready, we can't initialize.
       // The MutationObserver will call this function again when content changes.
       console.log(
-        'TheWarren Preview: "advancedSearch" table not found yet. Waiting for DOM updates.',
+        "The Warren Preview: table not found yet. Waiting for DOM updates.",
       );
       isSetup = false; // Reset setup status if we couldn't find the table
       return;
@@ -166,7 +173,7 @@
 
     attachRowListeners();
     isSetup = true;
-    console.log("TheWarren Preview: Image preview functionality enabled.");
+    console.log("The Warren Preview: Image preview functionality enabled.");
   }
 
   // --- Main Execution Logic ---
@@ -176,8 +183,11 @@
   const mainObserver = new MutationObserver((mutations) => {
     // We want to re-initialize if the body's content changes significantly,
     // which indicates a potential SPA navigation or dynamic loading.
-    // Checking for 'advancedSearch' table presence is a good trigger.
-    if (!isSetup || !document.getElementById("advancedSearch")) {
+    // Checking for 'containerElement' table presence is a good trigger.
+    const containerElement = document.querySelector(
+      containerElementQueryString,
+    );
+    if (!isSetup || !containerElement) {
       initializeImagePreview();
     } else {
       // If already setup and the main table is still there, just re-attach listeners
