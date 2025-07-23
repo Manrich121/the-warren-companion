@@ -1,30 +1,39 @@
 #image-preview {
-  position: absolute;
-  border: 1px solid #ccc;
-  background-color: white;
-  padding: 10px;
-  z-index: 1000;
-  pointer-events: none; /* Allows interactions with elements beneath */
-  display: none; /* Initially hidden */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
+    position: absolute;
+    border: 1px solid #ccc;
+    background-color: white;
+    padding: 10px;
+    z-index: 1000;
+    pointer-events: none; /* Allows interactions with elements beneath */
+    display: none; /* Initially hidden */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
 }
 
 #image-preview img {
-  max-width: 300px; /* Adjust as needed */
-  max-height: 300px; /* Adjust as needed */
-  display: block;
+    max-width: 300px; /* Adjust as needed */
+    max-height: 300px; /* Adjust as needed */
+    display: block;
 }
 
 /* Foil effect for preview when card has isFoil class */
 #image-preview.foil::after {
-  content: "";
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  bottom: 10px;
-  border-radius: 4px;
-  background: linear-gradient(45deg, #ff00004d, #ffa5004d, #ffff004d, #0080004d, #0000ff4d, #4b00824d, #ee82ee4d);
-  pointer-events: none;
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border-radius: 4px;
+    background: linear-gradient(
+        45deg,
+        #ff00004d,
+        #ffa5004d,
+        #ffff004d,
+        #0080004d,
+        #0000ff4d,
+        #4b00824d,
+        #ee82ee4d
+    );
+    pointer-events: none;
 }

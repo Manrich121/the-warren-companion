@@ -13,7 +13,7 @@ A Chrome extension that adds image preview functionality to the advanced search 
 
 1. Open Chrome and go to `chrome://extensions/`
 2. Enable "Developer mode" (toggle in the top right)
-3. Click "Load unpacked" 
+3. Click "Load unpacked"
 4. Select the folder containing this extension
 5. The extension will be loaded and active
 
@@ -27,7 +27,7 @@ A Chrome extension that adds image preview functionality to the advanced search 
 ## Files
 
 - `manifest.json` - Extension configuration
-- `content.js` - Main functionality script
+- `scripts/content.js` - Main functionality script
 - `styles.css` - Styling for the preview window
 - `README.md` - This file
 
