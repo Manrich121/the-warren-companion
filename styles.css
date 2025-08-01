@@ -44,3 +44,13 @@
     );
     pointer-events: none;
 }
+
+
+/* Ensure the container has a relative position */
+.resultsTable {
+    position: relative;
+}
+
+#cloned-pagination-container {
+    margin-bottom: 10px;
+}

@@ -1,3 +1,4 @@
+
 // TheWarren Image Preview Extension - Content Script
 
 (function () {
@@ -176,36 +177,96 @@
     console.log("The Warren Preview: Image preview functionality enabled.");
   }
 
+  function clonePagination() {
+    const resultsTable = document.querySelector('.resultsTable');
+    if (!resultsTable) {
+        return;
+    }
+
+    // Remove any existing cloned pagination to avoid duplicates on re-renders
+    const existingClonedPagination = document.getElementById('cloned-pagination-container');
+    if (existingClonedPagination) {
+        existingClonedPagination.remove();
+    }
+
+    const originalPagination = resultsTable.querySelector('.pagination-container');
+    if (originalPagination) {
+        const clonedPagination = originalPagination.cloneNode(true);
+        clonedPagination.id = 'cloned-pagination-container';
+
+        const heading = resultsTable.querySelector('.row.heading');
+        if (heading) {
+            resultsTable.insertBefore(clonedPagination, heading);
+
+            const originalArrows = originalPagination.querySelectorAll('.arrow');
+            const clonedArrows = clonedPagination.querySelectorAll('.arrow');
+
+            clonedArrows.forEach((clonedArrow, index) => {
+                clonedArrow.addEventListener('click', () => {
+                    originalArrows[index].click();
+                });
+            });
+        }
+    }
+  }
+
   // --- Main Execution Logic ---
 
-  // Use a single MutationObserver to watch for changes to the entire body.
-  // This helps handle SPA navigation where content might be replaced entirely.
-  const mainObserver = new MutationObserver((mutations) => {
-    // We want to re-initialize if the body's content changes significantly,
-    // which indicates a potential SPA navigation or dynamic loading.
-    // Checking for 'containerElement' table presence is a good trigger.
-    const containerElement = document.querySelector(
-      containerElementQueryString,
-    );
-    if (!isSetup || !containerElement) {
-      initializeImagePreview();
-    } else {
-      // If already setup and the main table is still there, just re-attach listeners
-      // in case new rows were added within the existing table.
-      attachRowListeners();
+  const observerOptions = {
+    childList: true,
+    subtree: true,
+  };
+
+  const mainObserver = new MutationObserver((mutations, observer) => {
+    // Check if the mutations are relevant to the results table before proceeding.
+    const isRelevantMutation = mutations.some(mutation => {
+        // Ignore changes caused by our own script.
+        if (mutation.target.id === 'cloned-pagination-container' || mutation.target.closest('#cloned-pagination-container')) {
+            return false;
+        }
+
+        // Check if the results table or its content was added.
+        for (const node of mutation.addedNodes) {
+            if (node.nodeType === Node.ELEMENT_NODE && (node.matches('.resultsTable') || node.querySelector('.resultsTable'))) {
+                return true;
+            }
+        }
+
+        // Check if the mutation happened inside an existing results table.
+        const resultsTable = document.querySelector('.resultsTable');
+        if (resultsTable && resultsTable.contains(mutation.target)) {
+            return true;
+        }
+
+        return false;
+    });
+
+    if (isRelevantMutation) {
+        // A relevant change was detected.
+        // Disconnect the observer to prevent an infinite loop from our own DOM changes.
+        observer.disconnect();
+
+        // Re-run the setup functions to update the UI.
+        initializeImagePreview();
+        clonePagination();
+
+        // Reconnect the observer to watch for future changes.
+        observer.observe(document.body, observerOptions);
     }
   });
 
-  // Start observing the body for child list changes (additions/removals)
-  // and subtree changes (any change within descendants).
-  mainObserver.observe(document.body, {
-    childList: true,
-    subtree: true,
-  });
+  function initialSetup() {
+    // Run the setup once initially.
+    initializeImagePreview();
+    clonePagination();
+    // Start observing for any future changes.
+    mainObserver.observe(document.body, observerOptions);
+  }
+
   // Initial attempt to set up when the DOM is ready.
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initializeImagePreview);
+    document.addEventListener("DOMContentLoaded", initialSetup);
   } else {
-    initializeImagePreview();
+    initialSetup();
   }
 })();
