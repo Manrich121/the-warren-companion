@@ -185,12 +185,12 @@ jobs:
           NEW_VERSION: ${{ needs.calculate-version.outputs.new_version }}
         run: |
           # Create release notes
-          RELEASE_NOTES="## What's Changed in v$NEW_VERSION
+          RELEASE_NOTES="**📋 Release PR:** ${{ steps.create_pr.outputs.pr_url }}
 
-          **📋 Release PR:** ${{ steps.create_pr.outputs.pr_url }}
+          ## What's Changed in v$NEW_VERSION
+            -
 
-          ---
-          ### Installation
+          ## Installation instructions
 
           1. Unzip contents to a convenient place
           2. Open Chrome and go to [chrome://extensions/](chrome://extensions/)
