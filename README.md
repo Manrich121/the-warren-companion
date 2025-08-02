@@ -2,7 +2,7 @@
 
 # The Warren Companion Chrome Extension
 
-A Chrome extension that adds various features tp theWarren.co.za.
+A Chrome extension that adds various features to theWarren.co.za.
 
 ## Features
 
