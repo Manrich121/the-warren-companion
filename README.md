@@ -1,16 +1,15 @@
 [![Latest Release](https://img.shields.io/badge/Release-v1.2.1-blue.svg)](https://github.com/Manrich121/the-warren-companion/releases/latest) [![.zip](https://img.shields.io/badge/download%20v1.2.1-.zip-green)](https://github.com/Manrich121/the-warren-companion/archive/refs/tags/v1.2.1.zip) [![.tar.gz](https://img.shields.io/badge/download%20v1.2.1-.tar.gz-green)](https://github.com/Manrich121/the-warren-companion/archive/refs/tags/v1.2.1.tar.gz)
 
-# The Warren Image Preview Extension
+# The Warren Companion Chrome Extension
 
-A Chrome extension that adds image preview functionality to the advanced search page on TheWarren.co.za. When you hover over search results, it displays a larger preview of the image.
-
+A Chrome extension that adds various features tp theWarren.co.za.
 
 ## Features
 
-- Hover over search result rows to see image previews
-- Non-intrusive preview window that doesn't interfere with page interaction
-- Automatic positioning and sizing
-- Works with dynamically loaded content
+1. Adds an on-hover image preview window to all images in tables.
+2. Adds hover styling to rows in tables.
+3. Duplicates pagination controls on the advance search results table.
+4. Adds a toggle to switch search results to grid or list view, and stores this preference in local storage.
 
 ## Installation
 

@@ -1,22 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "The Warren Image Preview",
+  "name": "The Warren Companion",
   "version": "1.2.1",
-  "description": "Adds image preview functionality to theWarren.co.za advanced search page",
-  "permissions": [
-    "activeTab"
-  ],
+  "description": "Adds functionality to theWarren.co.za",
+  "permissions": ["activeTab"],
   "content_scripts": [
     {
-      "matches": [
-        "https://thewarren.co.za/*"
-      ],
-      "js": [
-        "scripts/content.js"
-      ],
-      "css": [
-        "styles.css"
-      ],
+      "matches": ["https://thewarren.co.za/*"],
+      "js": ["scripts/content.js"],
+      "css": ["styles.css"],
       "run_at": "document_idle"
     }
   ],
