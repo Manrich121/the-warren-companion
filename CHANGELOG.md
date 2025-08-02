@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.3 - 2025-08-02
+
+* Add page links to search results pagination controls.
+
 ## Version 1.2 - 2025-08-02
 
 * Implement grid layout for advanced search results.
