@@ -1,8 +1,9 @@
+[![Latest Release](https://img.shields.io/badge/Release-v1.2-blue.svg)](https://github.com/Manrich121/the-warren-companion/releases/latest) [![.zip](https://img.shields.io/badge/download%20v1.2-.zip-green)](https://github.com/Manrich121/the-warren-companion/archive/refs/tags/v1.2.zip) [![.tar.gz](https://img.shields.io/badge/download%20v1.2-.tar.gz-green)](https://github.com/Manrich121/the-warren-companion/archive/refs/tags/v1.2.tar.gz)
+
 # The Warren Image Preview Extension
 
 A Chrome extension that adds image preview functionality to the advanced search page on TheWarren.co.za. When you hover over search results, it displays a larger preview of the image.
 
-Chrome extension that adds features to thewarren.co.za
 
 ## Features
 
