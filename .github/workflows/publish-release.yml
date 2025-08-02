@@ -1,0 +1,57 @@
+name: Finalize Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [master]
+
+jobs:
+  finalize-release:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'release/') &&
+      contains(github.event.pull_request.labels.*.name, 'release')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Update and publish release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TAG="v$VERSION"
+
+          # Check if release exists and update it
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Updating existing draft release $TAG"
+
+            # Publish the release (removes draft status)
+            gh release edit "$TAG" --draft=false
+
+            echo "✅ Release $TAG has been published with assets!"
+          else
+            echo "No existing draft release found for $TAG"
+
+      - name: Clean up release branch
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          echo "Cleaning up release branch: $BRANCH_NAME"
+          git push origin --delete "$BRANCH_NAME" || echo "Branch already deleted"
+
+      - name: Output summary
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          echo "## Release v$VERSION Published! 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: v$VERSION" >> $GITHUB_STEP_SUMMARY
+          echo "- **Assets**: Extension packages uploaded" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: Published and ready for download" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Release URL:" >> $GITHUB_STEP_SUMMARY
+          echo "https://github.com/${{ github.repository }}/releases/tag/v$VERSION" >> $GITHUB_STEP_SUMMARY

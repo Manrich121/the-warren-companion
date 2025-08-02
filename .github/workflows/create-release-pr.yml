@@ -145,13 +145,9 @@ jobs:
           NEW_VERSION: ${{ steps.new_version.outputs.new }}
 
         run: |
-          # Create release notes
-          RELEASE_NOTES="## What's Changed in v$NEW_VERSION"
-
           # Create draft release
           gh release create "v$NEW_VERSION" \
             --title "v$NEW_VERSION" \
-            --notes "$RELEASE_NOTES" \
             --draft \
             --generate-notes
 
