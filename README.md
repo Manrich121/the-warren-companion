@@ -2,6 +2,8 @@
 
 A Chrome extension that adds image preview functionality to the advanced search page on TheWarren.co.za. When you hover over search results, it displays a larger preview of the image.
 
+Chrome extension that adds features to thewarren.co.za
+
 ## Features
 
 - Hover over search result rows to see image previews
