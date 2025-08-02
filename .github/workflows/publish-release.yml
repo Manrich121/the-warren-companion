@@ -6,7 +6,7 @@ on:
     branches: [master]
 
 jobs:
-  finalize-release:
+  publish-release:
     runs-on: ubuntu-latest
     if: |
       github.event.pull_request.merged == true &&
@@ -44,6 +44,7 @@ jobs:
             echo "✅ Release $TAG has been published with assets!"
           else
             echo "No existing draft release found for $TAG"
+          fi
 
       - name: Clean up release branch
         run: |
