@@ -132,6 +132,14 @@ jobs:
           # Create PR body with changelog
           PR_BODY="## Release v$NEW_VERSION\nThis PR prepares the release of version $NEW_VERSION.\n\n### Changes\n- Bumped version from v$CURRENT_VERSION to v$NEW_VERSION in manifest.json\n- Updated README.md version badges and download links"
 
+          # Create the pull request
+          gh pr create \
+            --title "Release v$NEW_VERSION" \
+            --body "$PR_BODY" \
+            --base master \
+            --head "$BRANCH_NAME" \
+            --label "release"
+
       - name: Create Draft GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -140,6 +148,14 @@ jobs:
 
           # Create release notes
           RELEASE_NOTES="## What's Changed in v$NEW_VERSION"
+
+          # Create draft release
+          gh release create "v$NEW_VERSION" \
+            --title "v$NEW_VERSION" \
+            --notes "$RELEASE_NOTES" \
+            --draft \
+            --generate-notes
+
       - name: Output summary
         run: |
           NEW_VERSION="${{ steps.new_version.outputs.new }}"
