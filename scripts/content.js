@@ -51,7 +51,7 @@
     return true;
   }
 
-  function attachRowListeners() {
+  function attachRowHoverListeners() {
     // Attach hover listeners to rows for background styling
     const allRows = document.querySelectorAll(".row");
     const newAttachedRows = new Set();
@@ -72,8 +72,10 @@
       }
     });
 
-    currentAttachedRows = newAttachedRows; // Update the set of attached rows
+    currentAttachedRows = newAttachedRows;
+  }
 
+  function attachImagePreviewListeners() {
     // Attach preview listeners to images only
     const allImages = document.querySelectorAll(".item.left > img");
     const newAttachedImages = new Set();
@@ -97,6 +99,18 @@
     });
 
     currentAttachedImages = newAttachedImages; // Update the set of attached images
+  }
+
+  function removeImagePreviewListeners() {
+    currentAttachedImages.forEach((img) => {
+      img.removeEventListener("mouseenter", handleImageMouseEnter);
+      img.removeEventListener("mouseleave", handleImageMouseLeave);
+      img.removeEventListener("mousemove", handleMouseMove);
+    });
+    currentAttachedImages.clear();
+    if (previewDiv) {
+      previewDiv.style.display = "none";
+    }
   }
 
   // Show preview when hovering over the image only
@@ -164,21 +178,23 @@
     if (!setupPreviewDiv()) {
       // If the results table isn't ready, we can't initialize.
       // The MutationObserver will call this function again when content changes.
-      console.log(
-        "The Warren Preview: table not found yet. Waiting for DOM updates.",
-      );
       isSetup = false; // Reset setup status if we couldn't find the table
       return;
     }
 
-    attachRowListeners();
+    attachRowHoverListeners();
     isSetup = true;
-    console.log("The Warren Preview: Image preview functionality enabled.");
   }
 
   function setViewMode(mode) {
     const resultsTable = document.querySelector(".resultsTable");
-    if (!resultsTable) return;
+    if (!resultsTable) {
+      const tableData = document.querySelector(".tableData");
+      if (tableData) {
+        attachImagePreviewListeners();
+      }
+      return;
+    }
 
     const gridViewBtn = document.getElementById("grid-view-btn");
     const listViewBtn = document.getElementById("list-view-btn");
@@ -188,11 +204,13 @@
       resultsTable.classList.remove("list-view");
       if (gridViewBtn) gridViewBtn.classList.add("active");
       if (listViewBtn) listViewBtn.classList.remove("active");
+      removeImagePreviewListeners();
     } else {
       resultsTable.classList.add("list-view");
       resultsTable.classList.remove("grid-view");
       if (listViewBtn) listViewBtn.classList.add("active");
       if (gridViewBtn) gridViewBtn.classList.remove("active");
+      attachImagePreviewListeners();
     }
 
     localStorage.setItem("viewMode", mode);
@@ -297,15 +315,16 @@
       for (const node of mutation.addedNodes) {
         if (
           node.nodeType === Node.ELEMENT_NODE &&
-          (node.matches(".resultsTable") || node.querySelector(".resultsTable"))
+          (node.matches(".tableData") || node.querySelector(".tableData"))
         ) {
           return true;
         }
       }
 
       // Check if the mutation happened inside an existing results table.
-      const resultsTable = document.querySelector(".resultsTable");
-      if (resultsTable && resultsTable.contains(mutation.target)) {
+      const resultsTable = document.querySelector(".tableData");
+      if (resultsTable) {
+        // && resultsTable.contains(mutation.target)) {
         return true;
       }
 
@@ -320,6 +339,7 @@
       // Re-run the setup functions to update the UI.
       initializeImagePreview();
       clonePagination();
+      loadViewMode();
 
       // Reconnect the observer to watch for future changes.
       observer.observe(document.body, observerOptions);

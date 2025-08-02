@@ -1,7 +1,7 @@
 /* Darken row background on hover or when hovered class is present */
 .tableData .row:hover:not(.heading),
 .tableData .row.row-hovered:not(.heading) {
-    background-color: #b8b4b4ab !important;
+    background-color: #ede9e9 !important;
     transition: background 0.15s;
 }
 
@@ -50,13 +50,21 @@
     position: relative;
 }
 
+.sep.clear {
+    margin: unset;
+}
+
 .pagination-container {
     display: flex;
     justify-content: flex-end;
 }
 
+.pagination-container .counter {
+    padding-bottom: 0;
+}
+
 #cloned-pagination-container {
-    margin-bottom: 10px;
+    margin-top: 0px;
 }
 
 .top-controls-container {
@@ -95,8 +103,7 @@
 
 .resultsTable.grid-view .tableData {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 5px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
 .resultsTable.grid-view .tableData a {
@@ -111,16 +118,17 @@
     flex-direction: column;
     align-items: center;
     border: 1px solid #ddd;
-    border-radius: 5px;
     overflow: hidden;
     height: 100%;
-    min-width: 200px !important;
+    min-width: 220px !important;
+    width: 100% !important;
+    box-sizing: border-box;
     position: relative;
     padding-bottom: 0 !important;
 }
 
 .resultsTable.grid-view .tableData .item.card {
-    width: 200px !important;
+    width: 220px !important;
     height: auto;
     border-right: none;
     padding: 0;
@@ -179,7 +187,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 200px !important;
+    width: 220px !important;
     height: 100% !important;
     background: linear-gradient(
         45deg,
