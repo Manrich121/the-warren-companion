@@ -45,12 +45,151 @@
     pointer-events: none;
 }
 
-
 /* Ensure the container has a relative position */
 .resultsTable {
     position: relative;
 }
 
+.pagination-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
 #cloned-pagination-container {
     margin-bottom: 10px;
+}
+
+.top-controls-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 15px;
+}
+
+.view-btn {
+    cursor: pointer;
+    transition: color 0.3s ease;
+    color: #ccc;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.view-btn:hover {
+    color: #000;
+}
+
+.view-btn.active {
+    color: #d9393d;
+}
+
+/* Grid View Styles */
+.resultsTable.grid-view .row.heading {
+    display: none;
+}
+
+.resultsTable.grid-view .tableData {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 5px;
+}
+
+.resultsTable.grid-view .tableData a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+
+.resultsTable.grid-view .tableData .row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 100%;
+    min-width: 200px !important;
+    position: relative;
+    padding-bottom: 0 !important;
+}
+
+.resultsTable.grid-view .tableData .item.card {
+    width: 200px !important;
+    height: auto;
+    border-right: none;
+    padding: 0;
+}
+
+.resultsTable.grid-view .tableData .item.card img {
+    width: 100%;
+    height: auto;
+}
+
+.resultsTable.grid-view .tableData .item.product_name {
+    display: none;
+}
+
+.resultsTable.grid-view .tableData .item.price,
+.resultsTable.grid-view .tableData .item.qty {
+    text-align: center;
+    padding: 5px !important;
+    width: 100%;
+}
+
+.resultsTable.grid-view .row .item.price span {
+    display: none;
+}
+
+.resultsTable.grid-view .tableData .item.actions {
+    display: none;
+    flex-direction: column;
+    position: absolute !important;
+    top: 10px;
+    right: 0;
+    transition: opacity 0.3s ease;
+    background: transparent;
+    border-radius: 5px;
+    box-sizing: border-box;
+    width: auto !important;
+    padding: 0 !important;
+}
+
+.resultsTable.grid-view .tableData .row:hover .item.actions {
+    display: flex;
+}
+
+.resultsTable.grid-view .tableData .item.actions .cartContainer {
+    display: none;
+}
+
+.resultsTable.grid-view .tableData .item.actions .addWishListBtn,
+.resultsTable.grid-view .tableData .item.actions .addBtn {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.resultsTable.grid-view .tableData .item.card.isFoil::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200px !important;
+    height: 100% !important;
+    background: linear-gradient(
+        45deg,
+        #ff00004d,
+        #ffa5004d,
+        #ffff004d,
+        #0080004d,
+        #0000ff4d,
+        #4b00824d,
+        #ee82ee4d
+    );
+    pointer-events: none;
 }

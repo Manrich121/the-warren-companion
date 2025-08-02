@@ -9,7 +9,7 @@ A Chrome extension that improves functionality on thewarren.co.za, includes:
 1. Adds an on-hover image preview window to all images in tables.
 2. Adds hover styling to rows in tables.
 3. Clones / Duplicates pagination controls on the advance search results table.
-4. (To be implemented) Adds the option to layout search results in a grid or list view.
+4. Adds a toggle to switch search results to grid or list view, and stores this preference in local storage.
 
 ## Project Structure
 

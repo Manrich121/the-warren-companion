@@ -1,4 +1,3 @@
-
 // TheWarren Image Preview Extension - Content Script
 
 (function () {
@@ -177,37 +176,102 @@
     console.log("The Warren Preview: Image preview functionality enabled.");
   }
 
+  function setViewMode(mode) {
+    const resultsTable = document.querySelector(".resultsTable");
+    if (!resultsTable) return;
+
+    const gridViewBtn = document.getElementById("grid-view-btn");
+    const listViewBtn = document.getElementById("list-view-btn");
+
+    if (mode === "grid") {
+      resultsTable.classList.add("grid-view");
+      resultsTable.classList.remove("list-view");
+      if (gridViewBtn) gridViewBtn.classList.add("active");
+      if (listViewBtn) listViewBtn.classList.remove("active");
+    } else {
+      resultsTable.classList.add("list-view");
+      resultsTable.classList.remove("grid-view");
+      if (listViewBtn) listViewBtn.classList.add("active");
+      if (gridViewBtn) gridViewBtn.classList.remove("active");
+    }
+
+    localStorage.setItem("viewMode", mode);
+  }
+
+  function addToggleButtons() {
+    const topControlsContainer = document.querySelector(
+      ".top-controls-container",
+    );
+    if (!topControlsContainer || document.getElementById("view-toggle")) {
+      return;
+    }
+
+    const viewToggle = document.createElement("div");
+    viewToggle.id = "view-toggle";
+    viewToggle.className = "view-toggle";
+
+    const gridViewBtn = document.createElement("div");
+    gridViewBtn.id = "grid-view-btn";
+    gridViewBtn.className = "view-btn";
+    gridViewBtn.innerText = "grid";
+    gridViewBtn.addEventListener("click", () => setViewMode("grid"));
+
+    const listViewBtn = document.createElement("div");
+    listViewBtn.id = "list-view-btn";
+    listViewBtn.className = "view-btn";
+    listViewBtn.innerText = "list";
+    listViewBtn.addEventListener("click", () => setViewMode("list"));
+
+    viewToggle.appendChild(listViewBtn);
+    viewToggle.appendChild(gridViewBtn);
+    topControlsContainer.prepend(viewToggle);
+
+    loadViewMode();
+  }
+
+  function loadViewMode() {
+    const savedViewMode = localStorage.getItem("viewMode") || "list";
+    setViewMode(savedViewMode);
+  }
+
   function clonePagination() {
-    const resultsTable = document.querySelector('.resultsTable');
+    const resultsTable = document.querySelector(".resultsTable");
     if (!resultsTable) {
-        return;
+      return;
     }
 
-    // Remove any existing cloned pagination to avoid duplicates on re-renders
-    const existingClonedPagination = document.getElementById('cloned-pagination-container');
-    if (existingClonedPagination) {
-        existingClonedPagination.remove();
+    let topControlsContainer = document.querySelector(
+      ".top-controls-container",
+    );
+    if (topControlsContainer) {
+      topControlsContainer.remove();
     }
 
-    const originalPagination = resultsTable.querySelector('.pagination-container');
+    topControlsContainer = document.createElement("div");
+    topControlsContainer.className = "top-controls-container";
+    resultsTable.insertBefore(
+      topControlsContainer,
+      resultsTable.querySelector(".row.heading"),
+    );
+
+    const originalPagination = resultsTable.querySelector(
+      ".pagination-container",
+    );
     if (originalPagination) {
-        const clonedPagination = originalPagination.cloneNode(true);
-        clonedPagination.id = 'cloned-pagination-container';
+      const clonedPagination = originalPagination.cloneNode(true);
+      clonedPagination.id = "cloned-pagination-container";
+      topControlsContainer.appendChild(clonedPagination);
 
-        const heading = resultsTable.querySelector('.row.heading');
-        if (heading) {
-            resultsTable.insertBefore(clonedPagination, heading);
+      const originalArrows = originalPagination.querySelectorAll(".arrow");
+      const clonedArrows = clonedPagination.querySelectorAll(".arrow");
 
-            const originalArrows = originalPagination.querySelectorAll('.arrow');
-            const clonedArrows = clonedPagination.querySelectorAll('.arrow');
-
-            clonedArrows.forEach((clonedArrow, index) => {
-                clonedArrow.addEventListener('click', () => {
-                    originalArrows[index].click();
-                });
-            });
-        }
+      clonedArrows.forEach((clonedArrow, index) => {
+        clonedArrow.addEventListener("click", () => {
+          originalArrows[index].click();
+        });
+      });
     }
+    addToggleButtons();
   }
 
   // --- Main Execution Logic ---
@@ -219,39 +283,46 @@
 
   const mainObserver = new MutationObserver((mutations, observer) => {
     // Check if the mutations are relevant to the results table before proceeding.
-    const isRelevantMutation = mutations.some(mutation => {
-        // Ignore changes caused by our own script.
-        if (mutation.target.id === 'cloned-pagination-container' || mutation.target.closest('#cloned-pagination-container')) {
-            return false;
-        }
-
-        // Check if the results table or its content was added.
-        for (const node of mutation.addedNodes) {
-            if (node.nodeType === Node.ELEMENT_NODE && (node.matches('.resultsTable') || node.querySelector('.resultsTable'))) {
-                return true;
-            }
-        }
-
-        // Check if the mutation happened inside an existing results table.
-        const resultsTable = document.querySelector('.resultsTable');
-        if (resultsTable && resultsTable.contains(mutation.target)) {
-            return true;
-        }
-
+    const isRelevantMutation = mutations.some((mutation) => {
+      // Ignore changes caused by our own script.
+      if (
+        mutation.target.id === "cloned-pagination-container" ||
+        mutation.target.closest("#cloned-pagination-container") ||
+        mutation.target.id === "view-toggle"
+      ) {
         return false;
+      }
+
+      // Check if the results table or its content was added.
+      for (const node of mutation.addedNodes) {
+        if (
+          node.nodeType === Node.ELEMENT_NODE &&
+          (node.matches(".resultsTable") || node.querySelector(".resultsTable"))
+        ) {
+          return true;
+        }
+      }
+
+      // Check if the mutation happened inside an existing results table.
+      const resultsTable = document.querySelector(".resultsTable");
+      if (resultsTable && resultsTable.contains(mutation.target)) {
+        return true;
+      }
+
+      return false;
     });
 
     if (isRelevantMutation) {
-        // A relevant change was detected.
-        // Disconnect the observer to prevent an infinite loop from our own DOM changes.
-        observer.disconnect();
+      // A relevant change was detected.
+      // Disconnect the observer to prevent an infinite loop from our own DOM changes.
+      observer.disconnect();
 
-        // Re-run the setup functions to update the UI.
-        initializeImagePreview();
-        clonePagination();
+      // Re-run the setup functions to update the UI.
+      initializeImagePreview();
+      clonePagination();
 
-        // Reconnect the observer to watch for future changes.
-        observer.observe(document.body, observerOptions);
+      // Reconnect the observer to watch for future changes.
+      observer.observe(document.body, observerOptions);
     }
   });
 
@@ -259,6 +330,7 @@
     // Run the setup once initially.
     initializeImagePreview();
     clonePagination();
+    loadViewMode();
     // Start observing for any future changes.
     mainObserver.observe(document.body, observerOptions);
   }
