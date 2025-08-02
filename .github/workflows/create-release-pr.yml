@@ -145,11 +145,23 @@ jobs:
           NEW_VERSION: ${{ steps.new_version.outputs.new }}
 
         run: |
+          # Create release notes
+          RELEASE_NOTES="## What's Changed in v$NEW_VERSION
+          ---
+          ### Installation
+
+          1. Unzip contents to a convenient place
+          2. Open Chrome and go to [chrome://extensions/](chrome://extensions/)
+          3. Enable **Developer mode** (toggle in the top right)
+          4. Click **Load unpacked**
+          5. Select the folder containing this extension
+          6. The extension will be loaded and active"
+
           # Create draft release
           gh release create "v$NEW_VERSION" \
             --title "v$NEW_VERSION" \
             --draft \
-            --generate-notes
+            --notes
 
       - name: Output summary
         run: |
