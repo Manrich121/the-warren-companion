@@ -41,11 +41,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Download CRX artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: extension-crx
-
       - name: Update and publish release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
