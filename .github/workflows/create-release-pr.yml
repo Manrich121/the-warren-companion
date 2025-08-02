@@ -4,16 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       version_type:
-        description: 'Version bump type'
+        description: "Version bump type"
         required: true
-        default: 'patch'
+        default: "patch"
         type: choice
         options:
           - patch
           - minor
           - major
       custom_version:
-        description: 'Custom version (optional, overrides version_type)'
+        description: "Custom version (optional, overrides version_type)"
         required: false
         type: string
 
@@ -21,7 +21,7 @@ jobs:
   create-release-pr:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Get current version
         id: current_version
@@ -47,7 +47,7 @@ jobs:
           CURRENT_VERSION="${{ steps.current_version.outputs.current }}"
           VERSION_TYPE="${{ github.event.inputs.version_type }}"
           CUSTOM_VERSION="${{ github.event.inputs.custom_version }}"
-          
+
           if [ ! -z "$CUSTOM_VERSION" ]; then
             NEW_VERSION="$CUSTOM_VERSION"
             echo "Using custom version: $NEW_VERSION"
@@ -57,7 +57,7 @@ jobs:
             MAJOR=${VERSION_PARTS[0]}
             MINOR=${VERSION_PARTS[1]:-0}
             PATCH=${VERSION_PARTS[2]:-0}
-            
+
             case $VERSION_TYPE in
               "major")
                 MAJOR=$((MAJOR + 1))
@@ -72,7 +72,7 @@ jobs:
                 PATCH=$((PATCH + 1))
                 ;;
             esac
-            
+
             if [ $PATCH -eq 0 ] && [ $MINOR -gt 0 ]; then
               NEW_VERSION="$MAJOR.$MINOR"
             elif [ $PATCH -eq 0 ] && [ $MINOR -eq 0 ]; then
@@ -81,7 +81,7 @@ jobs:
               NEW_VERSION="$MAJOR.$MINOR.$PATCH"
             fi
           fi
-          
+
           echo "new=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "New version: $NEW_VERSION"
 
@@ -102,12 +102,12 @@ jobs:
         run: |
           NEW_VERSION="${{ steps.new_version.outputs.new }}"
           CURRENT_VERSION="${{ steps.current_version.outputs.current }}"
-          
+
           # Update version badges and download links
           sed -i "s/Release-v${CURRENT_VERSION}/Release-v${NEW_VERSION}/g" README.md
           sed -i "s/download%20v${CURRENT_VERSION}/download%20v${NEW_VERSION}/g" README.md
           sed -i "s/tags\/v${CURRENT_VERSION}/tags\/v${NEW_VERSION}/g" README.md
-          
+
           echo "Updated README.md version references from v$CURRENT_VERSION to v$NEW_VERSION"
 
       - name: Commit changes
@@ -128,58 +128,18 @@ jobs:
         run: |
           NEW_VERSION="${{ steps.new_version.outputs.new }}"
           CURRENT_VERSION="${{ steps.current_version.outputs.current }}"
-          
+
           # Create PR body with changelog
-          PR_BODY="## Release v$NEW_VERSION
-
-This PR prepares the release of version $NEW_VERSION.
-
-### Changes
-- Bumped version from v$CURRENT_VERSION to v$NEW_VERSION in manifest.json
-- Updated README.md version badges and download links
-
-### Next Steps
-After merging this PR:
-1. A GitHub release will be automatically created
-2. Release assets will be generated
-
----
-*This PR was created automatically by the Create Release PR workflow.*"
-
-          # Create the pull request
-          gh pr create \
-            --title "Release v$NEW_VERSION" \
-            --body "$PR_BODY" \
-            --base master \
-            --head "$BRANCH_NAME" \
-            --label "release"
+          PR_BODY="## Release v$NEW_VERSION\nThis PR prepares the release of version $NEW_VERSION.\n\n### Changes\n- Bumped version from v$CURRENT_VERSION to v$NEW_VERSION in manifest.json\n- Updated README.md version badges and download links"
 
       - name: Create Draft GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           NEW_VERSION="${{ steps.new_version.outputs.new }}"
-          
+
           # Create release notes
-          RELEASE_NOTES="## What's Changed in v$NEW_VERSION
-
-<!-- Add your release notes here -->
-
-### Installation
-1. Download the extension files from the assets below
-2. Open Chrome and go to \`chrome://extensions/\`
-3. Enable \"Developer mode\"
-4. Click \"Load unpacked\" and select the extracted folder
-
-**Full Changelog**: https://github.com/${{ github.repository }}/compare/v${{ steps.current_version.outputs.current }}...v$NEW_VERSION"
-
-          # Create draft release
-          gh release create "v$NEW_VERSION" \
-            --title "v$NEW_VERSION" \
-            --notes "$RELEASE_NOTES" \
-            --draft \
-            --generate-notes
-
+          RELEASE_NOTES="## What's Changed in v$NEW_VERSION"
       - name: Output summary
         run: |
           NEW_VERSION="${{ steps.new_version.outputs.new }}"
