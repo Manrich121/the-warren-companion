@@ -1,6 +1,6 @@
 [![Latest Release](https://img.shields.io/badge/Release-v1.2.2-blue.svg)](https://github.com/Manrich121/the-warren-companion/releases/latest) [![.zip](https://img.shields.io/badge/download%20v1.2.2-.zip-green)](https://github.com/Manrich121/the-warren-companion/archive/refs/tags/v1.2.2.zip) [![.tar.gz](https://img.shields.io/badge/download%20v1.2.2-.tar.gz-green)](https://github.com/Manrich121/the-warren-companion/archive/refs/tags/v1.2.2.tar.gz)
 
-# The Warren Companion Chrome Extension
+# [<img src="images/logo.svg">](#) The Warren Companion Chrome Extension
 
 A Chrome extension that adds various features to theWarren.co.za.
 
