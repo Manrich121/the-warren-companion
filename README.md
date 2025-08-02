@@ -1,4 +1,4 @@
-[![Latest Release](https://img.shields.io/badge/Release-v1.2.2-blue.svg)](https://github.com/Manrich121/the-warren-companion/releases/latest) [![.zip](https://img.shields.io/badge/download%20v1.2.2-.zip-green)](https://github.com/Manrich121/the-warren-companion/archive/refs/tags/v1.2.2.zip) [![.tar.gz](https://img.shields.io/badge/download%20v1.2.2-.tar.gz-green)](https://github.com/Manrich121/the-warren-companion/archive/refs/tags/v1.2.2.tar.gz)
+[![Latest Release](https://img.shields.io/badge/Release-v1.3-blue.svg)](https://github.com/Manrich121/the-warren-companion/releases/latest) [![.zip](https://img.shields.io/badge/download%20v1.3-.zip-green)](https://github.com/Manrich121/the-warren-companion/archive/refs/tags/v1.3.zip) [![.tar.gz](https://img.shields.io/badge/download%20v1.3-.tar.gz-green)](https://github.com/Manrich121/the-warren-companion/archive/refs/tags/v1.3.tar.gz)
 
 # [<img src="images/logo.svg">](#) The Warren Companion Chrome Extension
 
