@@ -127,8 +127,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEW_VERSION: ${{ steps.new_version.outputs.new }}
           CURRENT_VERSION: ${{ steps.current_version.outputs.current }}
-          PR_BODY: "## Release v$NEW_VERSION"
         run: |
+          # Create PR body with changelog
+          PR_BODY="## Release v$NEW_VERSION"
+
+          # Create the pull request
           gh pr create \
             --title "Release v$NEW_VERSION" \
             --body "$PR_BODY" \
@@ -140,8 +143,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEW_VERSION: ${{ steps.new_version.outputs.new }}
-          RELEASE_NOTES: "## What's Changed in v$NEW_VERSION"
+
         run: |
+          # Create release notes
+          RELEASE_NOTES="## What's Changed in v$NEW_VERSION"
+
+          # Create draft release
           gh release create "v$NEW_VERSION" \
             --title "v$NEW_VERSION" \
             --notes "$RELEASE_NOTES" \
