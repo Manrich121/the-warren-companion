@@ -75,26 +75,6 @@
     display: flex !important;
 }
 
-.arrow {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #d9393d;
-    color: #fff;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.arrow:hover {
-    background-color: #b32729;
-}
-
 #cloned-pagination-container {
     margin-top: 0px;
 }
